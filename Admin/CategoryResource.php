@@ -71,14 +71,14 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 TableSchema::getName(),
-                TableSchema::getStatus(),
                 TextColumn::make('parent_id')
                     ->label(__('Parent'))
                     ->formatStateUsing(function ($record) {
                         return $record->parent->name;
                     }),
-                TableSchema::getSorting(),
                 TableSchema::getViews(),
+                TableSchema::getStatus(),
+                TableSchema::getSorting(),
                 TableSchema::getUpdatedAt(),
             ])
             ->headerActions([
