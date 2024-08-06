@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\CategoryResource\RelationManagers;
+namespace Modules\Category\Admin\CategoryResource\RelationManagers;
 
-use App\Filament\Resources\ProductResource;
-use App\Models\Product;
-use App\Service\MultiLang;
+use App\Services\Schema;
+use App\Services\TableSchema;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Modules\Product\Admin\ProductResource;
 
 class ProductsRelationManager extends RelationManager
 {
@@ -26,45 +25,55 @@ class ProductsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('sorting')->numeric()->default(0),
+                TextInput::make('sorting')
+                    ->numeric()
+                    ->default(0)
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                $query->leftJoin(Product::TRANSLATE_TABLE, Product::TRANSLATE_TABLE . '.product_id', Product::TABLE . '.id')
-                    ->select(Product::TABLE . '.*', Product::TRANSLATE_TABLE . '.name', Product::CATEGORIES_RELATION_TABLE . '.sorting')
-                    ->where('language_id', MultiLang::getCurrentLanguageId())->orderBy(Product::CATEGORIES_RELATION_TABLE . '.sorting');
-            })
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')->url(fn ($record): string => ProductResource::getUrl('edit', [
-                    'record' => $record->id,
-                ])),
-                TextInputColumn::make('sorting')->type('number')->label(__('Sort'))->default(0)->updateStateUsing(function ($record, $state) {
-                    $category_id = $record->pivot_category_id;
-                    $product_id = $record->pivot_product_id;
-                    $sorting = $state;
-                    DB::table(Product::CATEGORIES_RELATION_TABLE)->where('category_id', $category_id)->where('product_id', $product_id)->update(['sorting' => $sorting]);
-                }),
+                Tables\Columns\TextColumn::make('name')
+                    ->url(fn ($record): string => ProductResource::getUrl('edit', [
+                        'record' => $record->id
+                    ])),
+                TableSchema::getStatus()
+                    ->label(__('Status'))
+                    ->updateStateUsing(function ($record, $state) {
+                        $category_id = $record->pivot_category_id;
+                        $product_id = $record->pivot_product_id;
+                        $status = $state;
+                        DB::table('category_products')->where('category_id', $category_id)->where('product_id', $product_id)->update(['status' => $status]);
+                    }),
+                TableSchema::getSku(),
+                TableSchema::getPrice()
             ])
             ->filters([
                 //
             ])
+            ->reorderable('sorting')
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->leftJoin(Product::TRANSLATE_TABLE, Product::TRANSLATE_TABLE . '.product_id', Product::TABLE . '.id')
-                        ->select(Product::TABLE . '.*', Product::TRANSLATE_TABLE . '.name')
-                        ->where('language_id', MultiLang::getCurrentLanguageId())->orderBy(Product::TRANSLATE_TABLE . '.name'))
-                    ->recordSelectSearchColumns([Product::TRANSLATE_TABLE . '.name'])
+                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->orderBy('name'))
+                    ->recordSelectSearchColumns(['name'])
                     ->multiple(),
-                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make('edit')
+                    ->label(__('Edit'))
+                    ->modalHeading(__('Edit Record'))
+                    ->modalWidth('lg')
+                    ->form([
+                        Schema::getSku(),
+                        Schema::getPrice()
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update($data);
+                    }),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

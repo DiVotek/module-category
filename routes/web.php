@@ -11,4 +11,3 @@ function category_slug()
    return $categoryPage && $categoryPage->slug ? $categoryPage->slug : 'category';
 }
 Route::get(category_slug() . '/{category}', [CategoryController::class, 'category'])->name('category');
-Route::get(category_slug() . '/{category}/{product}', [CategoryController::class, 'product'])->name('product');

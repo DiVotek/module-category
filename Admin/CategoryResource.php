@@ -7,9 +7,6 @@ use App\Models\Setting;
 use App\Services\Schema;
 use App\Services\TableSchema;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -17,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Category\Admin\CategoryResource\RelationManagers\ProductsRelationManager;
 use Modules\Category\Models\Category;
 use Modules\Category\Admin\CategoryResource\Pages;
 use Modules\Seo\Admin\SeoResource\Pages\SeoRelationManager;
@@ -27,7 +25,7 @@ class CategoryResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Category');
+        return __('Catalog');
     }
 
     public static function getNavigationBadge(): ?string
@@ -60,27 +58,44 @@ class CategoryResource extends Resource
                             ->pluck('name', 'id')
                             ->toArray()
                         )->native(false)->searchable(),
-                        Schema::getImage(isMultiple: true),
-                        Schema::getImage(name: 'banner')
+                        Schema::getImage(isMultiple: true)
                     ])
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TableSchema::getName(),
-                TextColumn::make('parent_id')
-                    ->label(__('Parent'))
+        $columns1 = [
+            TableSchema::getName(),
+            TextColumn::make('parent_id')
+                ->label(__('Parent'))
+                ->formatStateUsing(function ($record) {
+                    return $record->parent->name;
+                })
+        ];
+        $columns2 = [];
+        if (file_exists(base_path('Modules/Product/Models/Product.php'))) {
+            $columns2 = [
+                TextColumn::make('products')
+                    ->label(__('Products'))
+                    ->badge()
+                    ->toggleable()
+                    ->numeric()
                     ->formatStateUsing(function ($record) {
-                        return $record->parent->name;
-                    }),
-                TableSchema::getViews(),
-                TableSchema::getStatus(),
-                TableSchema::getSorting(),
-                TableSchema::getUpdatedAt(),
-            ])
+                        return $record->products->count();
+                    })
+            ];
+        }
+        $columns3 = [
+            TableSchema::getViews(),
+            TableSchema::getStatus(),
+            TableSchema::getSorting(),
+            TableSchema::getUpdatedAt()
+        ];
+        $columns = array_merge($columns1, $columns2, $columns3);
+
+        return $table
+            ->columns($columns)
             ->headerActions([
                 Action::make(__('Help'))
                     ->iconButton()
@@ -91,6 +106,7 @@ class CategoryResource extends Resource
             ])
             ->reorderable('sorting')
             ->filters([
+                TableSchema::getFilterParentId(),
                 TableSchema::getFilterStatus(),
             ])
             ->actions([
@@ -138,11 +154,19 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
+        $relations1 = [
+            TranslatableRelationManager::class,
+            SeoRelationManager::class
+        ];
+        $relations2 = [];
+        if (file_exists(base_path('Modules/Product/Models/Product.php'))) {
+            $relations2 = [
+                ProductsRelationManager::class
+            ];
+        }
+        $relations = array_merge($relations1, $relations2);
         return [
-            RelationGroup::make('Seo and translates', [
-                TranslatableRelationManager::class,
-                SeoRelationManager::class,
-            ]),
+            RelationGroup::make('Seo and translates', $relations),
         ];
     }
 
