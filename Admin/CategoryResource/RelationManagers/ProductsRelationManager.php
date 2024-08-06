@@ -54,7 +54,7 @@ class ProductsRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->reorderable('sorting')
+            ->reorderable('category_products.sorting')
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
