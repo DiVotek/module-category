@@ -27,7 +27,7 @@ class ProductsRelationManager extends RelationManager
                     ->maxLength(255),
                 TextInput::make('sorting')
                     ->numeric()
-                    ->default(0)
+                    ->default(0),
             ]);
     }
 
@@ -38,7 +38,7 @@ class ProductsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->url(fn ($record): string => ProductResource::getUrl('edit', [
-                        'record' => $record->id
+                        'record' => $record->id,
                     ])),
                 TableSchema::getStatus()
                     ->label(__('Status'))
@@ -49,7 +49,7 @@ class ProductsRelationManager extends RelationManager
                         DB::table('category_products')->where('category_id', $category_id)->where('product_id', $product_id)->update(['status' => $status]);
                     }),
                 TableSchema::getSku(),
-                TableSchema::getPrice()
+                TableSchema::getPrice(),
             ])
             ->filters([
                 //
@@ -69,7 +69,7 @@ class ProductsRelationManager extends RelationManager
                     ->modalWidth('lg')
                     ->form([
                         Schema::getSku(),
-                        Schema::getPrice()
+                        Schema::getPrice(),
                     ])
                     ->action(function ($record, $data) {
                         $record->update($data);

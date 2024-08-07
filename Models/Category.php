@@ -19,17 +19,17 @@ use Modules\Seo\Traits\HasSeo;
 
 class Category extends Model
 {
+    use HasBreadcrumbs;
     use HasFactory;
+    use HasProducts;
+    use HasRoute;
+    use HasSeo;
+    use HasSlug;
     use HasSorting;
     use HasStatus;
     use HasTimestamps;
-    use HasSlug;
-    use HasSeo;
     use HasTranslate;
-    use HasRoute;
-    use HasBreadcrumbs;
     use HasViews;
-    use HasProducts;
 
     protected $fillable = [
         'name',
@@ -39,7 +39,7 @@ class Category extends Model
         'status',
         'parent_id',
         'views',
-        'template'
+        'template',
     ];
 
     protected $casts = ['template' => 'array'];

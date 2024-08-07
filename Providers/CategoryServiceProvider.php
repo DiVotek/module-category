@@ -2,7 +2,6 @@
 
 namespace Modules\Category\Providers;
 
-use App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,9 +15,7 @@ class CategoryServiceProvider extends ServiceProvider
         Route::middleware('web')->group(module_path('Category', 'routes/web.php'));
     }
 
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     private function loadMigrations(): void
     {

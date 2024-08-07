@@ -14,10 +14,11 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Category\Admin\CategoryResource\Pages;
 use Modules\Category\Admin\CategoryResource\RelationManagers\ProductsRelationManager;
 use Modules\Category\Models\Category;
-use Modules\Category\Admin\CategoryResource\Pages;
 use Modules\Seo\Admin\SeoResource\Pages\SeoRelationManager;
+use Nwidart\Modules\Facades\Module;
 
 class CategoryResource extends Resource
 {
@@ -58,8 +59,8 @@ class CategoryResource extends Resource
                             ->pluck('name', 'id')
                             ->toArray()
                         )->native(false)->searchable(),
-                        Schema::getImage()
-                    ])
+                        Schema::getImage(),
+                    ]),
             ]);
     }
 
@@ -71,7 +72,7 @@ class CategoryResource extends Resource
                 ->label(__('Parent'))
                 ->formatStateUsing(function ($record) {
                     return $record->parent->name;
-                })
+                }),
         ];
         $columns2 = [];
         if (file_exists(base_path('Modules/Product/Models/Product.php'))) {
@@ -83,14 +84,14 @@ class CategoryResource extends Resource
                     ->numeric()
                     ->formatStateUsing(function ($record) {
                         return $record->products->count();
-                    })
+                    }),
             ];
         }
         $columns3 = [
             TableSchema::getViews(),
             TableSchema::getStatus(),
             TableSchema::getSorting(),
-            TableSchema::getUpdatedAt()
+            TableSchema::getUpdatedAt(),
         ];
         $columns = array_merge($columns1, $columns2, $columns3);
 
@@ -125,13 +126,13 @@ class CategoryResource extends Resource
                     ->fillForm(function (): array {
                         return [
                             'template' => setting(config('settings.blog.category.template'), []),
-                            'design' => setting(config('settings.blog.category.design'), 'Zero')
+                            'design' => setting(config('settings.blog.category.design'), 'Zero'),
                         ];
                     })
                     ->action(function (array $data): void {
                         setting([
                             config('settings.blog.category.template') => $data['template'],
-                            config('settings.blog.category.design') => $data['design']
+                            config('settings.blog.category.design') => $data['design'],
                         ]);
                         Setting::updatedSettings();
                     })
@@ -143,7 +144,7 @@ class CategoryResource extends Resource
                                     Schema::getTemplateBuilder()->label(__('Template')),
                                 ]),
                             ]);
-                    })
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -154,17 +155,14 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        $relations1 = [
+        $relations = [
             TranslatableRelationManager::class,
-            SeoRelationManager::class
+            SeoRelationManager::class,
         ];
-        $relations2 = [];
-        if (file_exists(base_path('Modules/Product/Models/Product.php'))) {
-            $relations2 = [
-                ProductsRelationManager::class
-            ];
+        if (Module::find('Product') && Module::find('Product')->isEnabled()) {
+            $relations[] = ProductsRelationManager::class;
         }
-        $relations = array_merge($relations1, $relations2);
+
         return [
             RelationGroup::make('Seo and translates', $relations),
         ];
