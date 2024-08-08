@@ -12,6 +12,10 @@ class CategoryServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrations();
+        $this->mergeConfigFrom(
+            module_path('Category', 'config/settings.php'),
+            'settings'
+        );
         Route::middleware('web')->group(module_path('Category', 'routes/web.php'));
     }
 
