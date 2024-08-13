@@ -8,6 +8,7 @@ use App\Traits\HasRoute;
 use App\Traits\HasSlug;
 use App\Traits\HasSorting;
 use App\Traits\HasStatus;
+use App\Traits\HasTags;
 use App\Traits\HasTimestamps;
 use App\Traits\HasTranslate;
 use App\Traits\HasViews;
@@ -30,6 +31,7 @@ class Category extends Model
     use HasTimestamps;
     use HasTranslate;
     use HasViews;
+    use HasTags;
 
     protected $fillable = [
         'name',

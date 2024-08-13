@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Modules\Category\Admin\CategoryResource\Pages;
 use Modules\Category\Admin\CategoryResource\RelationManagers\ProductsRelationManager;
 use Modules\Category\Models\Category;
+use Modules\Search\Admin\TagResource\RelationManagers\TagRelationManager;
 use Modules\Seo\Admin\SeoResource\Pages\SeoRelationManager;
 use Nwidart\Modules\Facades\Module;
 
@@ -162,7 +163,9 @@ class CategoryResource extends Resource
         if (Module::find('Product') && Module::find('Product')->isEnabled()) {
             $relations[] = ProductsRelationManager::class;
         }
-
+        if (Module::find('Search') && Module::find('Search')->isEnabled()) {
+            $relations[] = TagRelationManager::class;
+        }
         return [
             RelationGroup::make('Seo and translates', $relations),
         ];
