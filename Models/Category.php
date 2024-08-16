@@ -31,7 +31,7 @@ class Category extends Model
     use HasTimestamps;
     use HasTranslate;
     use HasViews;
-    use HasTags;
+    // use HasTags;
 
     protected $fillable = [
         'name',
@@ -53,7 +53,7 @@ class Category extends Model
 
     public function route(): string
     {
-        return tRoute('category', ['category' => $this->slug]);
+        return tRoute('slug', ['slug' => $this->slug]);
     }
 
     public function getBreadcrumbs(): array

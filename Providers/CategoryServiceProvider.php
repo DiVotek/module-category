@@ -16,7 +16,6 @@ class CategoryServiceProvider extends ServiceProvider
             module_path('Category', 'config/settings.php'),
             'settings'
         );
-        Route::middleware('web')->group(module_path('Category', 'routes/web.php'));
     }
 
     public function register(): void {}
