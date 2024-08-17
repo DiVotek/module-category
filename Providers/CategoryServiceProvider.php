@@ -16,6 +16,7 @@ class CategoryServiceProvider extends ServiceProvider
             module_path('Category', 'config/settings.php'),
             'settings'
         );
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'category');
     }
 
     public function register(): void {}

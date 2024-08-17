@@ -12,6 +12,6 @@ class CategoryPage extends PageComponent
         if (empty($entity->template)) {
             $entity->template = setting(config('settings.category.template'), []);
         }
-        parent::__construct($entity, 'order::category-component');
+        parent::__construct($entity, 'category::category-component');
     }
 }
