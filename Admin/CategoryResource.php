@@ -2,6 +2,7 @@
 
 namespace Modules\Category\Admin;
 
+use App\Filament\Resources\StaticPageResource\RelationManagers\TemplateRelationManager;
 use App\Filament\Resources\TranslateResource\RelationManagers\TranslatableRelationManager;
 use App\Models\Setting;
 use App\Services\Schema;
@@ -156,6 +157,7 @@ class CategoryResource extends Resource
         if (Module::find('Search') && Module::find('Search')->isEnabled()) {
             $relations[] = TagRelationManager::class;
         }
+        $relations[] = TemplateRelationManager::class;
         return [
             RelationGroup::make('Seo and translates', $relations),
         ];
