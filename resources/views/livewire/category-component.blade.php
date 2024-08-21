@@ -41,7 +41,7 @@
                   aria-label="{{ _t('Filter') }}">
                   <div class="space-y-8 pb-6">
                      @foreach ($categories as $key => $category)
-                     <div class="checkbox-input select-none" wire:click="filterCategory({{$category->id}})">
+                     <x-link href="{{$category->route()}}" title="{{$category->name()}}" class="checkbox-input select-none" wire:click="filterCategory({{$category->id}})">
                         <input type="checkbox" id="filter_{{$key}}" name="filter_{{$key}}" wire:model="activeCategories"
                            value="{{$category->id}}"">
                         <label for=" filter_{{$key}}">
@@ -55,7 +55,7 @@
                         </div>
                         <span>{{$category->name()}}</span>
                         </label>
-                     </div>
+                     </x-link>
                      @endforeach
                      <div class="pt-6">
                         <span class="block mb-4 text-base-content">Ціна, грн</span>
@@ -180,7 +180,7 @@
          </fieldset>
       </div>
    </div>
-   <div class="description container mr-4 pb-4">
+   <div class="description container mr-4 pb-4 text-white">
       {!! $page->seo->content ?? '' !!}
    </div>
 </div>
