@@ -5,13 +5,13 @@
          <div class="flex justify-center gap-x-8 items-center">
             @foreach ($categories as $cat)
             <x-link href="{{$cat->route()}}" title="{{$cat->name}}"
-               class="flex flex-col justify-center items-center gap-y-6 group">
+               class="flex flex-col justify-center items-center gap-y-6 group @if($page->id == $cat->id) active @endif">
                <div class="size-24 s:size-28 lg:size-36">
                   <x-image src="{{$cat->image}}" alt="{{$cat->name}}" width="144" heigth="144"
                      class="size-full object-contain transition-all duration-200 group-hover:scale-105" />
                </div>
                <h3
-                  class="text-xl s:text-2xl line-clamp-2 h-[2.666em] text-white text-center duration-300 ease-linear group-hover:text-accent">
+                  class="text-xl s:text-2xl line-clamp-2 h-[2.666em] text-white text-center duration-300 ease-linear group-hover:text-accent @if($page->id == $cat->id) !text-accent @endif">
                   {{$cat->name}}
                </h3>
             </x-link>
