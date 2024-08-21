@@ -1,5 +1,5 @@
 <div>
-   <h1 class="container title !text-left pb-5">{{_t("Catalog")}}</h1>
+   <div class="container title !text-left pb-5">{{_t("Catalog")}}</div>
    <div class="pt-6 pb-11 mb-10 md:mb-12 lg:mb-20 relative bg-base-200 after:size-12 max-lg:after:hidden after:block after:absolute after:bottom-0 after:left-1/2 after:translate-y-1/2 after:-translate-x-1/2 after:rotate-45 after:bg-base-200">
       <div class="container overflow-x-auto">
          <div class="flex justify-center gap-x-8 items-center">
