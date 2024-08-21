@@ -2,6 +2,7 @@
 
 namespace Modules\Category\Admin;
 
+use App\Filament\Resources\StaticPageResource\RelationManagers\TemplateRelationManager;
 use App\Filament\Resources\TranslateResource\RelationManagers\TranslatableRelationManager;
 use App\Models\Setting;
 use App\Services\Schema;
@@ -55,47 +56,37 @@ class CategoryResource extends Resource
                         Schema::getSlug(),
                         Schema::getSorting(),
                         Schema::getStatus(),
-                        Schema::getSelect('parent_id', Category::query()
-                            ->where('id', '!=', $form->model->id ?? 0)
-                            ->pluck('name', 'id')
-                            ->toArray()
+                        Schema::getSelect(
+                            'parent_id',
+                            Category::query()
+                                ->where('id', '!=', $form->model->id ?? 0)
+                                ->pluck('name', 'id')
+                                ->toArray()
                         )->native(false)->searchable(),
                         Schema::getImage(),
+                        Schema::getTemplateBuilder(),
                     ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        $columns1 = [
+        $columns = [
             TableSchema::getName(),
-            TextColumn::make('parent_id')
-                ->label(__('Parent'))
-                ->formatStateUsing(function ($record) {
-                    return $record->parent->name;
-                }),
-        ];
-        $columns2 = [];
-        if (file_exists(base_path('Modules/Product/Models/Product.php'))) {
-            $columns2 = [
-                TextColumn::make('products')
-                    ->label(__('Products'))
-                    ->badge()
-                    ->toggleable()
-                    ->numeric()
-                    ->formatStateUsing(function ($record) {
-                        return $record->products->count();
-                    }),
-            ];
-        }
-        $columns3 = [
-            TableSchema::getViews(),
             TableSchema::getStatus(),
             TableSchema::getSorting(),
-            TableSchema::getUpdatedAt(),
+            TextColumn::make('parent.name')
+                ->label(__('Parent'))
         ];
-        $columns = array_merge($columns1, $columns2, $columns3);
-
+        if (module_enabled('Product')) {
+            $columns[] = TextColumn::make('products_count')
+                ->label('Products')
+                ->counts('products')
+                ->badge()
+                ->sortable();
+        }
+        $columns[] =    TableSchema::getViews();
+        $columns[] = TableSchema::getUpdatedAt();
         return $table
             ->columns($columns)
             ->headerActions([
@@ -126,14 +117,14 @@ class CategoryResource extends Resource
                     ->icon('heroicon-o-cog')
                     ->fillForm(function (): array {
                         return [
-                            'template' => setting(config('settings.blog.category.template'), []),
-                            'design' => setting(config('settings.blog.category.design'), 'Zero'),
+                            'template' => setting(config('settings.category.template'), []),
+                            'design' => setting(config('settings.category.design'), 'Zero'),
                         ];
                     })
                     ->action(function (array $data): void {
                         setting([
-                            config('settings.blog.category.template') => $data['template'],
-                            config('settings.blog.category.design') => $data['design'],
+                            config('settings.category.template') => $data['template'],
+                            config('settings.category.design') => $data['design'],
                         ]);
                         Setting::updatedSettings();
                     })
@@ -166,6 +157,7 @@ class CategoryResource extends Resource
         if (Module::find('Search') && Module::find('Search')->isEnabled()) {
             $relations[] = TagRelationManager::class;
         }
+        $relations[] = TemplateRelationManager::class;
         return [
             RelationGroup::make('Seo and translates', $relations),
         ];

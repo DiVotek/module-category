@@ -12,8 +12,6 @@ class CategoryPage extends PageComponent
         if (empty($entity->template)) {
             $entity->template = setting(config('settings.category.template'), []);
         }
-        $component = setting(config('settings.category.design'), 'Base');
-        $component = 'template.' . strtolower(template()) . '.pages.category.' . strtolower($component);
-        parent::__construct($entity, $component);
+        parent::__construct($entity, 'category::category-component');
     }
 }

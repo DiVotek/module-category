@@ -9,6 +9,7 @@ use App\Traits\HasSlug;
 use App\Traits\HasSorting;
 use App\Traits\HasStatus;
 use App\Traits\HasTags;
+use App\Traits\HasTemplate;
 use App\Traits\HasTimestamps;
 use App\Traits\HasTranslate;
 use App\Traits\HasViews;
@@ -31,7 +32,8 @@ class Category extends Model
     use HasTimestamps;
     use HasTranslate;
     use HasViews;
-    use HasTags;
+    use HasTemplate;
+    // use HasTags;
 
     protected $fillable = [
         'name',
@@ -53,7 +55,7 @@ class Category extends Model
 
     public function route(): string
     {
-        return tRoute('category', ['category' => $this->slug]);
+        return tRoute('slug', ['slug' => $this->slug]);
     }
 
     public function getBreadcrumbs(): array
