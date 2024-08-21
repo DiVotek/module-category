@@ -64,7 +64,7 @@ class CategoryResource extends Resource
                                 ->toArray()
                         )->native(false)->searchable(),
                         Schema::getImage(),
-                        Schema::getTemplateBuilder(),
+//                        Schema::getTemplateBuilder(),
                     ]),
             ]);
     }

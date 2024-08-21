@@ -6,6 +6,7 @@ use App\View\Components\Microdata;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Modules\Category\Models\Category;
+use Modules\Product\Models\Product;
 
 class ProductCategory extends Microdata
 {
@@ -22,8 +23,8 @@ class ProductCategory extends Microdata
 
     public function buildData(Category $entity): array
     {
-        $currency = app('currency')->code;
-        $brand = app('company_name');
+        $currency = setting('currency')->code;
+        $brand = setting('company_name');
         $stockStatus = 'http://schema.org/InStock';
         $data = [
             'name' => $entity->name,
@@ -38,7 +39,7 @@ class ProductCategory extends Microdata
             $values[] = (object) [
                 '@type' => 'ListItem',
                 'position' => $i++,
-                'url' => request()->url() . '/' . $product->slug,
+                'url' => Product::route(),
                 'item' => (object) [
                     '@type' => 'Product',
                     'name' => $product->name ?? '',
@@ -51,7 +52,7 @@ class ProductCategory extends Microdata
                     ],
                     'offers' => (object) [
                         '@type' => 'Offer',
-                        'url' => request()->url() . '/' . $product->slug,
+                        'url' => Product::route(),
                         'priceCurrency' => $currency,
                         'price' => $product->price,
                         'priceValidUntil' => $product->updated_at->format('Y-m-d'),
@@ -59,7 +60,7 @@ class ProductCategory extends Microdata
                         'availability' => $stockStatus,
                         'seller' => (object) [
                             '@type' => 'Organization',
-                            'name' => app('company_name'),
+                            'name' => setting('company_name'),
                         ],
                     ],
                 ],

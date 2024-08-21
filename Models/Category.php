@@ -33,7 +33,7 @@ class Category extends Model
     use HasTranslate;
     use HasViews;
     use HasTemplate;
-    // use HasTags;
+    use HasTags;
 
     protected $fillable = [
         'name',
