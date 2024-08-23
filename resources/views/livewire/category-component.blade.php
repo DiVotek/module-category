@@ -94,7 +94,12 @@
                               <span>Ціна:</span>
                               <span>{{$product->price}} {{app('currency')->name}} </span>
                            </div>
-                           <span class="text-sm font-light text-neutral-content">за 100 гр</span>
+                           @if (setting(config('settings.product.measure')))
+                           @if ($product->measure)
+                           <span class="text-sm font-light text-neutral-content">{{_t('For')}} 1 {{_t($product->measure)}}</span>
+                           @else
+                           <span class="text-sm font-light text-neutral-content">{{_t('For')}} {{setting(config('settings.product.measure_quantity'))}} {{setting(config('settings.product.measure'))}}</span>
+                           @endif
                         </div>
                         @if (module_enabled('Order'))
                         <button class="btn btn-dark w-full xs:w-auto s:w-full sm:w-auto md:w-full xl:w-auto text-sm" aria-label="{{ _t('Add to cart') }}" wire:click="addToCart({{$product->id}})">
