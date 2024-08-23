@@ -24,6 +24,8 @@ class CategoryComponent extends Component
     public $min_price;
     #[Url(as:'max')]
     public $max_price;
+    public $referenceMaxPrice;
+    public $referenceMinPrice;
 
     public Category $page;
 
@@ -36,6 +38,8 @@ class CategoryComponent extends Component
         ]);
         $this->min_price = request()->query('min_price',  Product::query()->min('price'));
         $this->max_price = request()->query('max_price', Product::query()->max('price'));
+        $this->referenceMaxPrice = Product::query()->max('price');
+        $this->referenceMinPrice = Product::query()->min('price');
         $this->page = $entity;
     }
 

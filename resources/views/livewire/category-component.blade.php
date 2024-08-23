@@ -71,7 +71,7 @@
                            <div class="range-input">
                               <input type="range" wire:model="min_price" class="min"
                                  step="1" wire:change="filter()" />
-                              <input type="range" class="max" min="0" max="100" wire:model="max_price" wire:change="filter()"
+                              <input type="range" class="max" min="{{$referenceMinPrice}}" max="{{$referenceMaxPrice}}" wire:model="max_price" wire:change="filter()"
                                  step="1" />
                            </div>
                         </div>
