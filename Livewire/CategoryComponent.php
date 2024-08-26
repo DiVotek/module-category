@@ -56,7 +56,7 @@ class CategoryComponent extends Component
     }
     public function render()
     {
-        return view('category::livewire.category-component', [
+        return view('template::' . setting(config('settings.category.design'),'category.default'), [
             'products' => Product::query()
                 ->when($this->activeCategories, function ($query) {
                     $query->whereHas('categories', function ($query) {

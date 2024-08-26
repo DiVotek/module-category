@@ -130,7 +130,7 @@ class CategoryResource extends Resource
                     ->form(function ($form) {
                         return $form
                             ->schema([
-                                Schema::getModuleTemplateSelect('Pages/Category'),
+                                Schema::getModuleTemplateSelect('category'),
                                 Section::make('')->schema([
                                     Schema::getTemplateBuilder()->label(__('Template')),
                                 ]),

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('views')->default(0);
             Category::timestampFields($table);
         });
-        StaticPage::createSystemPage('Catalog', 'catalog',path:'catalog-component');
+        StaticPage::createSystemPage('Catalog', 'catalog',path:'catalog-component',setting_key: 'catalog');
     }
 
     /**
