@@ -37,7 +37,7 @@ class ProductsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->url(fn ($record): string => ProductResource::getUrl('edit', [
+                    ->url(fn($record): string => ProductResource::getUrl('edit', [
                         'record' => $record->id,
                     ])),
                 TableSchema::getStatus()
@@ -58,7 +58,7 @@ class ProductsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->orderBy('name'))
+                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->orderBy('name'))
                     ->recordSelectSearchColumns(['name'])
                     ->multiple(),
             ])
@@ -78,7 +78,7 @@ class ProductsRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make(),
                 ]),
             ]);
     }

@@ -111,6 +111,7 @@ class CategoryResource extends Resource
                     })->openUrlInNewTab(),
             ])
             ->headerActions([
+                Schema::helpAction('Category help text'),
                 Tables\Actions\Action::make('Template')
                     ->slideOver()
                     ->icon('heroicon-o-cog')
@@ -146,19 +147,16 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        $relations = [
-            TranslatableRelationManager::class,
-            SeoRelationManager::class,
-        ];
+        $relations = [];
         if (Module::find('Product') && Module::find('Product')->isEnabled()) {
             $relations[] = ProductsRelationManager::class;
         }
         if (Module::find('Search') && Module::find('Search')->isEnabled()) {
             $relations[] = TagRelationManager::class;
         }
-        $relations[] = TemplateRelationManager::class;
         return [
-            RelationGroup::make('Seo and translates', $relations),
+            Schema::getSeoAndTemplateRelationGroup(),
+            RelationGroup::make('Other', $relations),
         ];
     }
 
