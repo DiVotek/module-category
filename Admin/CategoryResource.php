@@ -48,6 +48,12 @@ class CategoryResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $authorsField = [];
+        if (Module::find('Team') && Module::find('Team')->isEnabled()) {
+            $authorsField = [
+                Schema::getAuthors()
+            ];
+        }
         return $form
             ->schema([
                 Section::make()
@@ -63,7 +69,7 @@ class CategoryResource extends Resource
                                 ->pluck('name', 'id')
                                 ->toArray()
                         )->native(false)->searchable(),
-                        Schema::getAuthors(),
+                        ...$authorsField,
                         Schema::getImage(),
                     ]),
             ]);
