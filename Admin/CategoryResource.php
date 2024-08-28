@@ -63,6 +63,7 @@ class CategoryResource extends Resource
                                 ->pluck('name', 'id')
                                 ->toArray()
                         )->native(false)->searchable(),
+                        Schema::getAuthors(),
                         Schema::getImage(),
                     ]),
             ]);
