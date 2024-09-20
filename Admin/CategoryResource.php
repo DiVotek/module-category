@@ -7,7 +7,9 @@ use App\Filament\Resources\TranslateResource\RelationManagers\TranslatableRelati
 use App\Models\Setting;
 use App\Services\Schema;
 use App\Services\TableSchema;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -64,6 +66,11 @@ class CategoryResource extends Resource
                                 ->toArray()
                         )->native(false)->searchable(),
                         Schema::getImage(),
+                        Repeater::make('custom')->label(__('Custom fields'))
+                        ->schema([
+                            TextInput::make('name'),
+                            TextInput::make('value'),
+                        ])->default([]),
                     ]),
             ]);
     }

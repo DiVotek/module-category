@@ -43,10 +43,10 @@ class Category extends Model
         'status',
         'parent_id',
         'views',
-        'template',
+        'custom'
     ];
 
-    protected $casts = ['template' => 'array'];
+    protected $casts = ['custom' => 'array'];
 
     public static function getDb(): string
     {

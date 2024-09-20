@@ -26,11 +26,13 @@ class CategoryComponent extends Component
     public $max_price;
     public $referenceMaxPrice;
     public $referenceMinPrice;
+    public $breadcrumbs;
 
     public Category $page;
 
-    public function mount(Category $entity)
+    public function mount(Category $entity,$breadcrumbs)
     {
+        $this->breadcrumbs = $breadcrumbs;
         $this->url = url()->current();
         $this->categories = Category::query()->get();
         $this->activeCategories = request()->query('activeCategories', [
